@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 300px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #007bff;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    a {
+      display: block;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    #msg {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Cadastrar</h2>
+
+    <form onsubmit="cadastrar(event)">
+      <input id="usuario" placeholder="Usuário">
+      <input id="senha" type="password" placeholder="Senha">
+
+      <button type="submit">Cadastrar</button>
+    </form>
+
+    <a href="entrar.html"><strong>Entrar</strong></a>
+
+    <p id="msg"></p>
+  </div>
+
+  <script>
+    async function cadastrar(event) {
+      event.preventDefault();
+
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const msg = document.getElementById("msg");
+
+      // Validação
+      if (!usuario || !senha) {
+        msg.innerText = "Preencha todos os campos!";
+        msg.style.color = "red";
+        return;
+      }
+
+      try {
+        const res = await fetch("/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ usuario, senha })
+        });
+
+        const data = await res.json();
+
+        msg.innerText = data.erro || data.sucesso;
+        msg.style.color = data.erro ? "red" : "green";
+
+      } catch (erro) {
+        msg.innerText = "Erro ao conectar ao servidor!";
+        msg.style.color = "red";
+      }
+    }
+  </script>
+
+</body>
+</html>
